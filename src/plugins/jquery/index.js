@@ -14,8 +14,12 @@ export const patch = $ => {
     const computation = function (...args) {
       setCurrentContext(ctx);
       handler.__computation = computation;
-      handler.call(this, ...args);
-      revertContext();
+      try {
+        handler.call(this, ...args);
+      }
+      finally {
+        revertContext();
+      }
     }
 
     ctx.addDisposable(

@@ -36,9 +36,12 @@ export const patch = () => {
 
         const computation = (...args) => {
           setCurrentContext(currentContext);
-          const ret = f.apply(this, args);
-          revertContext();
-          return ret;
+          try {
+            return f.apply(this, args);
+          }
+          finally {
+            revertContext();
+          }
         }
 
         return computation;

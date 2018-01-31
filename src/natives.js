@@ -25,8 +25,12 @@ export const patch = () => {
 
       const computation = () => {
         setCurrentContext(currentContext);
-        fn(...params);
-        revertContext();
+        try {
+          fn(...params);
+        }
+        finally {
+          revertContext();
+        }
       }
       const id = native[method](computation, ms);
       const dispose = () => global[`clear${method}`](id);

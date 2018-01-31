@@ -31,8 +31,12 @@ export const createContext = (label = 'anonymous') => {
     }
     currentContext = ctx;
 
-    computation();
-    currentContext = ctx.parent;
+    try {
+      computation();
+    }
+    finally {
+      currentContext = ctx.parent;
+    }
   }
 
   // public API

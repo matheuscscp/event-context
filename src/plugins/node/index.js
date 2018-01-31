@@ -25,8 +25,12 @@ export const patch = () => {
 
     const computation = (...args) => {
       setCurrentContext(ctx);
-      callback(...args);
-      revertContext();
+      try {
+        callback(...args);
+      }
+      finally {
+        revertContext();
+      }
     }
 
     nextTick(computation, ...rest)
@@ -40,9 +44,12 @@ export const patch = () => {
 
     const computation = (...args) => {
       setCurrentContext(ctx);
-      const ret = handler.call(this, ...args);
-      revertContext();
-      return ret;
+      try {
+        return handler.call(this, ...args);
+      }
+      finally {
+        revertContext();
+      }
     }
 
     if (handler.listener) {
