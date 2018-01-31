@@ -1,5 +1,5 @@
 {
-  "name": "event-context",
+  "name": "tfg-event-context",
   "version": "0.5.3",
   "description": "Universal Event context for JavaScript",
   "main": "index.js",
@@ -35,7 +35,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tungv/event-context.git"
+    "url": "git+https://github.com/topfreegames/event-context.git"
   },
   "keywords": [
     "event",
@@ -46,7 +46,7 @@
   "author": "Tung Vu <me@tungv.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/tungv/event-context/issues"
+    "url": "https://github.com/topfreegames/event-context/issues"
   },
-  "homepage": "https://github.com/tungv/event-context#readme"
+  "homepage": "https://github.com/topfreegames/event-context#readme"
 }

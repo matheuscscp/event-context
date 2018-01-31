@@ -10,17 +10,17 @@
 2. automatic disposal for every pending tasks and event listeners to prevent memory leaks. EventContext works with Promise as well, so you can abort nested unresolved promises with ease. Context disposal is accessible everywhere with `ctx.dispose()`
 
 # Plugins
-EventContext for jQuery (jQuery events) https://www.npmjs.com/package/event-context-plugin-jquery
+EventContext for jQuery (jQuery events) https://www.npmjs.com/package/tfg-event-context-plugin-jquery
 
-EventContext for NodeJS (nextTick, EventEmitter) https://www.npmjs.com/package/event-context-plugin-node
+EventContext for NodeJS (nextTick, EventEmitter) https://www.npmjs.com/package/tfg-event-context-plugin-node
 
 ## Installation:
 
 ```bash
-npm i -S event-context
+npm i -S tfg-event-context
 
 # to use it with a plugin, just add the plugin package
-npm i -S event-context-plugin-node
+npm i -S tfg-event-context-plugin-node
 ```
 
 ## Usages
@@ -32,8 +32,8 @@ See the example below, it was not easy to get the req inside a downstream functi
 without explicitly passing the req along the way.
 
 ```js
-import { withContext, getCurrentContext } from 'event-context';
-import { patch } from 'event-context-plugin-node';
+import { withContext, getCurrentContext } from 'tfg-event-context';
+import { patch } from 'tfg-event-context-plugin-node';
 
 // patch all NodeJS binding after this call
 patch();

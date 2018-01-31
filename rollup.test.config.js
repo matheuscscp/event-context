@@ -15,7 +15,7 @@ export default {
     multiEntry(),
     buble(),
     alias({
-      'event-context': path.resolve('./src/context.js'),
+      'tfg-event-context': path.resolve('./src/context.js'),
     }),
   ]
 };

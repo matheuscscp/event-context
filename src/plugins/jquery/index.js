@@ -1,4 +1,4 @@
-import { getCurrentContext, setCurrentContext, revertContext } from 'event-context';
+import { getCurrentContext, setCurrentContext, revertContext } from 'tfg-event-context';
 
 export const patch = $ => {
   const $add = $.event.add;

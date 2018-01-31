@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import { getCurrentContext, setCurrentContext, revertContext } from 'event-context';
+import { getCurrentContext, setCurrentContext, revertContext } from 'tfg-event-context';
 
 const instanceMap = new WeakMap;
 const listenerMap = new WeakMap;

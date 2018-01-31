@@ -15,7 +15,7 @@ Make EventContext package aware of jQuery bindings
 ## Installation:
 
 ```bash
-npm i -S event-context event-context-plugin-jquery
+npm i -S tfg-event-context tfg-event-context-plugin-jquery
 ```
 
 ## Usages
@@ -23,8 +23,8 @@ npm i -S event-context event-context-plugin-jquery
 ### Passing data across functions without declaring them each time.
 
 ```js
-import { createContext, getCurrentContext } from 'event-context';
-import { patch } from 'event-context-plugin-jquery';
+import { createContext, getCurrentContext } from 'tfg-event-context';
+import { patch } from 'tfg-event-context-plugin-jquery';
 
 // patch all jQuery binding after this call
 patch();
@@ -82,4 +82,4 @@ ctx.dispose()
 All bound event handlers within the context will be removed.
 
 ## See also
-EventContext for NodeJS https://www.npmjs.com/package/event-context-plugin-node
+EventContext for NodeJS https://www.npmjs.com/package/tfg-event-context-plugin-node

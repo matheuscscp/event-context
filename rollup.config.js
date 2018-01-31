@@ -23,6 +23,6 @@ export default {
     functions: [ 'console.*', 'assert.*', 'debug', 'alert' ],
   })],
   globals: {
-    'event-context': 'EventContext',
+    'tfg-event-context': 'EventContext',
   }
 };

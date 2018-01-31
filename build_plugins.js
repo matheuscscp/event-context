@@ -8,7 +8,7 @@ const PLUGIN_NAMES = process.argv.slice(2);
 PLUGIN_NAMES.forEach(buildPlugin);
 
 function buildPlugin (PLUGIN_NAME) {
-  const PLUGIN_PACKAGE_NAME = `event-context-plugin-${PLUGIN_NAME}`;
+  const PLUGIN_PACKAGE_NAME = `tfg-event-context-plugin-${PLUGIN_NAME}`;
   const CORE_VERSION = corePackage.version;
   const SRC = `./src/plugins/${PLUGIN_NAME}`
   const DEST = `./build/plugins-${PLUGIN_NAME}`
@@ -26,8 +26,8 @@ output:           ${DEST}
 
   pluginPackage.name = PLUGIN_PACKAGE_NAME;
   pluginPackage.version = CORE_VERSION;
-  pluginPackage.peerDependencies['event-context'] = `^${CORE_VERSION}`;
-  pluginPackage.description = `${PLUGIN_NAME} plugin for event-context (Universal event context library for JavaScript)`;
+  pluginPackage.peerDependencies['tfg-event-context'] = `^${CORE_VERSION}`;
+  pluginPackage.description = `${PLUGIN_NAME} plugin for tfg-event-context (Universal event context library for JavaScript)`;
 
   const outputPackageJson = JSON.stringify(pluginPackage, null, 2);
   console.info(`
