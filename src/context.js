@@ -1,13 +1,11 @@
-let prevContext = null;
-let currentContext = null;
+let contexts = [null];
 
-export const getCurrentContext = () => currentContext;
+export const getCurrentContext = () => contexts[contexts.length-1];
 export const setCurrentContext = ctx => {
-  prevContext = currentContext;
-  currentContext = ctx;
+  contexts.push(ctx);
 }
 export const revertContext = () => {
-  currentContext = prevContext;
+  contexts.pop();
 }
 
 export const createContext = (label = 'anonymous') => {
@@ -22,20 +20,20 @@ export const createContext = (label = 'anonymous') => {
     }
 
     hasRun = true;
-    ctx.parent = currentContext;
+    ctx.parent = getCurrentContext();
 
     // inherit states
     if (ctx.parent) {
       const parentState = Object.create(ctx.parent.getState());
       state = Object.assign(parentState, state);
     }
-    currentContext = ctx;
+    setCurrentContext(ctx);
 
     try {
       computation();
     }
     finally {
-      currentContext = ctx.parent;
+      revertContext();
     }
   }
 
