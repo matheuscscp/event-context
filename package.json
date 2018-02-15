@@ -1,6 +1,6 @@
 {
   "name": "tfg-event-context",
-  "version": "0.5.4",
+  "version": "0.5.5",
   "description": "Universal Event context for JavaScript",
   "main": "index.js",
   "jsnext:main": "index.es.js",

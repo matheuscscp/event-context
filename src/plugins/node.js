@@ -4,6 +4,7 @@ import { getCurrentContext, setCurrentContext, revertContext } from 'tfg-event-c
 const computationMap = new WeakMap;
 const listenerMap = new WeakMap;
 const nextTick = process.nextTick;
+const setImmediate = global.setImmediate;
 const proto = EventEmitter.prototype;
 const eEmit = proto.emit;
 const eAddListener = proto.addListener;
@@ -34,6 +35,28 @@ export const patch = () => {
     }
 
     nextTick(computation, ...rest)
+  }
+
+  global.setImmediate = (callback, ...rest) => {
+    const ctx = getCurrentContext();
+    if (!ctx) {
+      return setImmediate(callback, ...rest);
+    }
+
+    const computation = (...args) => {
+      setCurrentContext(ctx);
+      try {
+        callback(...args);
+      }
+      finally {
+        revertContext();
+      }
+    }
+
+    const id = setImmediate(computation, ...rest);
+    const dispose = () => clearImmediate(id);
+    ctx.addDisposable(dispose);
+    return id;
   }
 
   const wrap = nativeAddFunction => function (type, handler) {
@@ -81,6 +104,7 @@ export const patch = () => {
 
 export const unpatch = () => {
   process.nextTick = nextTick;
+  global.setImmediate = setImmediate;
   proto.addListener = proto.on = eAddListener;
   proto.prependListener = ePrependListener;
   proto.removeListener = eRemoveListener;

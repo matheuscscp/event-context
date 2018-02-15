@@ -30,7 +30,7 @@ export const createContext = (label = 'anonymous') => {
     setCurrentContext(ctx);
 
     try {
-      computation();
+      return computation();
     }
     finally {
       revertContext();
@@ -48,7 +48,5 @@ export const createContext = (label = 'anonymous') => {
 
 export const withContext = fn => function (...params) {
   const ctx = createContext();
-  return ctx.run(() => {
-    fn.apply(this, params);
-  });
+  return ctx.run(() => fn.apply(this, params));
 }
