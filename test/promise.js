@@ -1,14 +1,18 @@
-import { createContext } from '../src/context';
-import { patch, unpatch } from '../src/natives';
+import { createContext, getCurrentContext, resetContexts, patch, unpatch } from '../src/context';
 import { expect } from 'chai';
-import { once } from 'lodash';
 
 describe('createContext', () => {
   describe('Promise', () => {
-    before(patch);
-    after(unpatch);
+    before(() => {
+      patch()
+    });
+    after(() => {
+      expect(getCurrentContext()).to.be.null;
+      unpatch()
+    });
 
     it('should work with Promise', done => {
+      resetContexts()
       const ctx = createContext();
       ctx.run(() => {
         const promise = new Promise((resolve) => {
@@ -19,28 +23,93 @@ describe('createContext', () => {
 
         promise.then(value => {
           expect(value).to.equal(42);
+          expect(getCurrentContext()).not.null;
           done()
-        });
+        }).catch(done);
       });
     });
 
-    it('should stop promises', done => {
-      const fail = label => done.bind(null, new Error(label));
+    it('should work with Promise.resolve', done => {
       const ctx = createContext();
       ctx.run(() => {
-        const promise = new Promise((resolve) => {
-          setTimeout(() => {
-            resolve(42);
-          }, 20)
-        });
-
+        let promise = Promise.resolve(42)
         promise.then(value => {
-          fail();
+          expect(getCurrentContext()).not.null;
+          done()
+        }).catch(done);
+      });
+    });
+
+    it('should work with await', done => {
+      const ctx = createContext();
+      ctx.run(async function () {
+        try {
+          let p = await Promise.resolve(123)
+          expect(getCurrentContext()).not.null;
+          done()
+        } catch (e) {
+          done(e)
+        }
+      });
+    });
+
+    it('should work correctly with then', done => {
+      resetContexts()
+      const p = new Promise((resolve, reject) => {
+        const ctx = createContext();
+        ctx.run(() => {
+          let promise = Promise.resolve(42)
+          promise.then(value => {
+            expect(getCurrentContext()).not.null;
+            resolve(24)
+          }).catch(reject);
         });
       });
+      p.then(value => {
+        expect(getCurrentContext()).to.be.null;
+        done()
+      }).catch(done);
+    });
 
-      setTimeout(ctx.dispose, 10);
-      setTimeout(done, 30);
+    it('should work correctly with catch', done => {
+      resetContexts()
+      const p = new Promise((resolve, reject) => {
+        const ctx = createContext();
+        ctx.run(() => {
+          let promise = Promise.resolve(42)
+          promise.then(value => {
+            expect(getCurrentContext()).not.null;
+            throw new Error("42")
+          }).catch(() => {
+            expect(getCurrentContext()).not.null;
+            resolve()
+          }).catch(done);
+        });
+      });
+      p.then(value => {
+        expect(getCurrentContext()).to.be.null;
+        done()
+      }).catch(done);
+    });
+
+    it('should work correctly with finally', done => {
+      resetContexts()
+      const p = new Promise((resolve, reject) => {
+        const ctx = createContext();
+        ctx.run(() => {
+          let promise = Promise.resolve(42)
+          promise.then(value => {
+            expect(getCurrentContext()).not.null;
+          }).finally(()=>{
+            expect(getCurrentContext()).not.null;
+            resolve()
+          }).catch(done);
+        });
+      });
+      p.then(value => {
+        expect(getCurrentContext()).to.be.null;
+        done()
+      }).catch(done);
     });
   });
 });

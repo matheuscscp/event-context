@@ -1,6 +1,6 @@
 {
   "name": "tfg-event-context",
-  "version": "0.5.6",
+  "version": "1.0.0",
   "description": "Universal Event context for JavaScript",
   "main": "index.js",
   "jsnext:main": "index.es.js",
@@ -9,28 +9,28 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "jquery": "^2.0.0",
+    "jquery": "^3.4.1",
     "jsdom": "9.5.0",
     "jsdom-global": "2.1.0",
-    "lodash": "^4.15.0",
-    "mocha": "^3.0.2",
+    "lodash": "^4.17.15",
+    "mocha": "^6.2.0",
     "mocha-jsdom": "^1.1.0",
-    "rollup": "^0.34.13",
+    "rollup": "^1.19.3",
     "rollup-plugin-alias": "^1.2.0",
-    "rollup-plugin-buble": "^0.13.0",
+    "rollup-plugin-buble": "^v0.19.8",
     "rollup-plugin-multi-entry": "^2.0.1",
     "rollup-plugin-strip": "^1.1.1",
     "rollup-watch": "^2.5.0",
+    "sinon": "^7.4.1",
     "source-map-support": "^0.4.2"
   },
   "scripts": {
-    "build": "npm run build:core && npm run build:plugins",
+    "build": "npm run build:core",
     "build:core": "rollup -c && cp {README.md,package.json} build/core/",
-    "build:plugins": "node build_plugins",
-    "test": "rollup -c rollup.test.config.js --sourcemap && mocha _test -R progress --require source-map-support/register",
+    "test": "rollup -c rollup.test.config.js --sourcemap && mocha _test -R progress --require source-map-support/register --exit",
     "test:watch": "npm test || true && chokidar '{src,test}/**/*.js' -c 'npm test'",
     "prerelease": "npm run build jquery node",
-    "release": "cd build/core && npm publish && cd ../plugins-jquery && npm publish && cd ../plugins-node && npm publish",
+    "release": "cd build/core && npm publish",
     "postrelease": "rm -rf build"
   },
   "repository": {
@@ -48,5 +48,8 @@
   "bugs": {
     "url": "https://github.com/topfreegames/event-context/issues"
   },
-  "homepage": "https://github.com/topfreegames/event-context#readme"
+  "homepage": "https://github.com/topfreegames/event-context#readme",
+  "engines": {
+    "node": ">=10.0.0"
+  }
 }

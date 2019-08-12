@@ -1,18 +1,70 @@
-let contexts = [null];
+import { createHook, executionAsyncId } from 'async_hooks';
 
-export const getCurrentContext = () => contexts[contexts.length-1];
+let contextsIds = {};
+let patched = false;
+let counter = 0;
+
+const hook = createHook({
+  init(asyncId, type, triggerAsyncId) {
+    const tarray = contextsIds[triggerAsyncId]
+    if (!tarray) return;
+    const tctx = tarray[tarray.length-1]
+    if (tctx) {
+      const newE = Object.assign({}, tctx)
+      newE.parent = tctx
+      contextsIds[asyncId] = [newE]
+    }
+  },
+  destroy(asyncId) {
+    delete contextsIds[asyncId]
+  }
+})
+
+export const unpatch = () => {
+  patched = false;
+  hook.disable()
+};
+
+export const patch = () => {
+  if (patched) {
+    console.warn(`Cannot call patch() for promise twice`);
+    return;
+  }
+  patched = true;
+  hook.enable()
+  return unpatch;
+}
+
+export const getCurrentContext = () => {
+  const ctxArray = contextsIds[executionAsyncId()]
+  if (!ctxArray) return null;
+  return ctxArray[ctxArray.length-1];
+}
 export const setCurrentContext = ctx => {
-  contexts.push(ctx);
+  const executionId = executionAsyncId()
+  if (!contextsIds[executionId]) {
+    contextsIds[executionId] = [ctx]
+  } else {
+    contextsIds[executionId].push(ctx)
+  }
 }
 export const revertContext = () => {
-  contexts.pop();
+  contextsIds[executionAsyncId()].pop()
+}
+export const resetContexts = () => {
+  contextsIds = {}
 }
 
-export const createContext = (label = 'anonymous') => {
+export const p = () => {
+  return contextsIds
+}
+
+export const createContext = (label) => {
   const ctx = {};
-  const disposables = [];
   let hasRun = false;
   let state = {};
+  if (!label) label = counter;
+  counter++;
 
   const run = (computation) => {
     if (hasRun) {
@@ -27,22 +79,28 @@ export const createContext = (label = 'anonymous') => {
       const parentState = Object.create(ctx.parent.getState());
       state = Object.assign(parentState, state);
     }
-    setCurrentContext(ctx);
 
+    ctx.toString = () => {
+      if (!ctx.parent) return `[${label}]`;
+      else return ctx.parent.toString()+`[${label}]`;
+    }
+    ctx.name = ctx.toString()
+
+    setCurrentContext(ctx);
     try {
       return computation();
     }
     finally {
-      revertContext();
+      revertContext()
     }
   }
 
   // public API
   ctx.run = run;
-  ctx.addDisposable = (disposable) => disposables.push(disposable);
-  ctx.dispose = () => disposables.forEach(fn => fn());
   ctx.getState = () => state
-  ctx.toString = () => `[Context ${label}]`;
+  ctx.toString = () => {
+    return `[.${label}.]`;
+  }
   return ctx;
 }
 
