@@ -9,18 +9,13 @@
 1. automatic state passing to downstream functions without explicitly declaring them in functions' parameters (think of [React's context](https://facebook.github.io/react/docs/context.html) but with inheritance). State values are accessible everywhere with `ctx.getState()`
 2. automatic disposal for every pending tasks and event listeners to prevent memory leaks. EventContext works with Promise as well, so you can abort nested unresolved promises with ease. Context disposal is accessible everywhere with `ctx.dispose()`
 
-# Plugins
-EventContext for jQuery (jQuery events) https://www.npmjs.com/package/tfg-event-context-plugin-jquery
-
-EventContext for NodeJS (nextTick, EventEmitter) https://www.npmjs.com/package/tfg-event-context-plugin-node
+# event-context-plugin-node
+Make EventContext package aware of jQuery bindings
 
 ## Installation:
 
 ```bash
-npm i -S tfg-event-context
-
-# to use it with a plugin, just add the plugin package
-npm i -S tfg-event-context-plugin-node
+npm i -S tfg-event-context tfg-event-context-plugin-node
 ```
 
 ## Usages
@@ -69,50 +64,6 @@ function callDB(callback) {
 
 ```
 
-### State inheritance
-
-State values are prototypically inherited (think of angular1's `scope`).
-
-```js
-
-// initiate contexts
-const parent = createContext('parent');
-const child = createContext('child');
-
-const pState = parent.getState();
-const cState = child.getState();
-
-// state can be set even before running.
-pState.parentOnly = 'parentOnly';
-pState.shared = 'parentShared';
-
-cState.childOnly = 'childOnly';
-cState.shared = 'childOverwrite';
-
-const childComputation = () => setTimeout(() => {
-  // child
-  const state = getCurrentContext().getState();
-  expect(state.childOnly).equal('childOnly');
-  expect(state.parentOnly).equal('parentOnly');
-  expect(state.shared).equal('childOverwrite');
-  done();
-}, 10);
-
-const parentComputaion = () => setTimeout(() => {
-  // parent
-  child.run(() => {
-    // child
-    childComputation()
-  })
-}, 10)
-
-parent.run(() => {
-  // parent
-  parentComputaion();
-});
-
-```
-
 ### Auto unbinding
 
 When you decide to stop all event listeners created in an context, just call `ctx.dispose()`
@@ -124,5 +75,5 @@ ctx.dispose()
 
 All bound event handlers within the context will be removed.
 
-## Contributions
-All contributions are super welcome
+## See also
+EventContext for jQuery https://www.npmjs.com/package/tfg-event-context-plugin-jquery
